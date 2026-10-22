@@ -934,3 +934,462 @@ button:disabled {
     max-width: 88%;
   }
 }
+
+/* Dynamic weather backgrounds */
+.app-shell {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+}
+
+.app-shell::before,
+.app-shell::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: background 0.8s ease, opacity 0.8s ease;
+}
+
+.app-shell::before {
+  background: linear-gradient(145deg, #f4f8ff, #edf4fc, #f8fbff);
+}
+
+/* Sunny: warm, gently shifting sunlight */
+.weather-sunny::before {
+  background:
+    radial-gradient(ellipse at 85% 8%, #ffe6a866, transparent 34%),
+    linear-gradient(145deg, #fffaf0, #edf7ff, #f4f8ff);
+  background-size: 150% 150%;
+  animation: sunny-glow 12s ease-in-out infinite alternate;
+}
+
+@keyframes sunny-glow {
+  from { background-position: 0% 0%; }
+  to { background-position: 100% 100%; }
+}
+
+/* Partly cloudy */
+.weather-partly-cloudy::before {
+  background:
+    radial-gradient(ellipse at 85% 12%, #ffe9b855, transparent 30%),
+    linear-gradient(145deg, #f1f7ff, #e5f1ff, #f8fbff);
+  background-size: 140% 140%;
+  animation: sky-drift 18s ease-in-out infinite alternate;
+}
+
+/* Cloudy and foggy */
+.weather-cloudy::before {
+  background:
+    radial-gradient(ellipse at 20% 10%, #ffffffb0, transparent 40%),
+    linear-gradient(145deg, #e4ebf2, #dce6ef, #f0f4f8);
+  background-size: 150% 150%;
+  animation: sky-drift 22s ease-in-out infinite alternate;
+}
+
+@keyframes sky-drift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+
+/* Rain and showers */
+.weather-rain::before {
+  background:
+    linear-gradient(125deg, #dce8f5, #cbd9e9, #e6edf5);
+}
+
+.weather-rain::after {
+  opacity: 0.4;
+  background-image:
+    repeating-linear-gradient(
+      110deg,
+      transparent 0,
+      transparent 24px,
+      #7194b322 25px,
+      #7194b322 26px,
+      transparent 27px,
+      transparent 48px
+    );
+  background-size: 100% 180%;
+  animation: rain-fall 1.8s linear infinite;
+}
+
+@keyframes rain-fall {
+  from { background-position: 0 0; }
+  to { background-position: -30px 180px; }
+}
+
+/* Snow */
+.weather-snow::before {
+  background:
+    radial-gradient(ellipse at 80% 10%, #ffffffa0, transparent 35%),
+    linear-gradient(145deg, #edf5fc, #dce9f5, #f7faff);
+}
+
+.weather-snow::after {
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle, #ffffff 1.5px, transparent 2px),
+    radial-gradient(circle, #ffffffb0 1px, transparent 2px);
+  background-size: 55px 65px, 85px 95px;
+  animation: snow-fall 10s linear infinite;
+}
+
+@keyframes snow-fall {
+  from { background-position: 0 -80px, 30px -100px; }
+  to { background-position: 35px 400px, -25px 350px; }
+}
+
+/* Thunderstorms */
+.weather-storm::before {
+  background:
+    radial-gradient(ellipse at 80% 0%, #657b9c55, transparent 45%),
+    linear-gradient(145deg, #cbd5e3, #aebdd0, #dce4ed);
+  animation: storm-shift 8s ease-in-out infinite alternate;
+}
+
+.weather-storm::after {
+  opacity: 0.18;
+  background: linear-gradient(120deg, transparent 35%, #ffffff 50%, transparent 65%);
+  transform: translateX(-100%);
+  animation: distant-flash 9s ease-in-out infinite;
+}
+
+@keyframes storm-shift {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+
+@keyframes distant-flash {
+  0%, 88%, 92%, 100% { opacity: 0; }
+  89%, 91% { opacity: 0.22; }
+}
+
+/* Night: deep blue atmosphere and subtle stars */
+.weather-night::before {
+  background:
+    radial-gradient(ellipse at 85% 8%, #657cb744, transparent 35%),
+    linear-gradient(145deg, #17263f, #253a59, #344966);
+}
+
+.weather-night::after {
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle, #ffffff 1px, transparent 1.8px),
+    radial-gradient(circle, #c7dcff 1px, transparent 1.8px);
+  background-size: 83px 91px, 127px 119px;
+  animation: star-drift 30s linear infinite;
+}
+
+@keyframes star-drift {
+  from { background-position: 0 0, 40px 30px; }
+  to { background-position: 83px 91px, 167px 149px; }
+}
+
+/* Keep the existing cards readable while the sky changes */
+.weather-night .topbar {
+  border-bottom-color: #ffffff24;
+}
+
+.weather-night .brand,
+.weather-night .hero h1,
+.weather-night .live-indicator {
+  color: #f0f5ff;
+}
+
+.weather-night .hero h1 span {
+  color: #a9c5ff;
+}
+
+.weather-night .hero-copy p,
+.weather-night .eyebrow {
+  color: #c0cce0;
+}
+
+.weather-night .current-card::before {
+  background: radial-gradient(
+    circle,
+    #647da333 0%,
+    #34496622 62%,
+    transparent 70%
+  );
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .weather-sunny::before,
+  .weather-partly-cloudy::before,
+  .weather-cloudy::before,
+  .weather-rain::after,
+  .weather-snow::after,
+  .weather-storm::before,
+  .weather-storm::after,
+  .weather-night::after {
+    animation: none !important;
+  }
+}
+
+/* Animated current-weather icons */
+.weather-symbol {
+  display: inline-block;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.weather-sunny .weather-symbol {
+  animation: sun-float 3s ease-in-out infinite;
+}
+
+.weather-partly-cloudy .weather-symbol,
+.weather-cloudy .weather-symbol {
+  animation: cloud-float 4s ease-in-out infinite;
+}
+
+.weather-rain .weather-symbol {
+  animation: rain-bob 1.8s ease-in-out infinite;
+}
+
+.weather-snow .weather-symbol {
+  animation: snow-sway 3.5s ease-in-out infinite;
+}
+
+.weather-storm .weather-symbol {
+  animation: storm-shake 2.5s ease-in-out infinite;
+}
+
+.weather-night .weather-symbol {
+  animation: moon-float 4s ease-in-out infinite;
+}
+
+@keyframes sun-float {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg) scale(1);
+  }
+  50% {
+    transform: translateY(-7px) rotate(5deg) scale(1.06);
+  }
+}
+
+@keyframes cloud-float {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(5px) translateY(-4px);
+  }
+}
+
+@keyframes rain-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes snow-sway {
+  0%, 100% {
+    transform: rotate(-8deg) translateY(0);
+  }
+  50% {
+    transform: rotate(8deg) translateY(-5px);
+  }
+}
+
+@keyframes storm-shake {
+  0%, 90%, 100% {
+    transform: translateX(0);
+  }
+  92%, 96% {
+    transform: translateX(-3px);
+  }
+  94%, 98% {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes moon-float {
+  0%, 100% {
+    transform: translateY(0) rotate(-5deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(5deg);
+  }
+}
+
+/* Premium Weather GPT UI polish */
+.current-card,
+.details-panel,
+.forecast-section,
+.chat-section {
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 12px 36px rgba(36, 61, 91, 0.055),
+    0 2px 7px rgba(36, 61, 91, 0.025);
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.current-card,
+.details-panel,
+.forecast-section {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.chat-section {
+  background: rgba(255, 255, 255, 0.91);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.current-card:hover,
+.details-panel:hover,
+.forecast-section:hover,
+.chat-section:hover {
+  box-shadow:
+    0 18px 45px rgba(36, 61, 91, 0.085),
+    0 3px 10px rgba(36, 61, 91, 0.035);
+}
+
+.detail-card {
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.detail-card:hover {
+  transform: translateY(-3px);
+  border-color: #d7e4f8;
+  background: #ffffff;
+}
+
+.search-form,
+.chat-form input {
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.search-form:focus-within {
+  border-color: #a9c4fb;
+  box-shadow: 0 0 0 4px rgba(52, 120, 246, 0.08);
+}
+
+.search-form button,
+.chat-form button {
+  box-shadow: 0 4px 12px rgba(52, 120, 246, 0.14);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.search-form button:hover:not(:disabled),
+.chat-form button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(52, 120, 246, 0.2);
+}
+
+.forecast-card {
+  background: rgba(249, 251, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.forecast-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(52, 120, 246, 0.09);
+}
+
+.chat-welcome,
+.assistant-message .message-bubble {
+  background: rgba(245, 248, 253, 0.88);
+}
+
+.weather-night .current-card,
+.weather-night .details-panel,
+.weather-night .forecast-section,
+.weather-night .chat-section {
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow:
+    0 14px 40px rgba(5, 12, 26, 0.12),
+    0 2px 8px rgba(5, 12, 26, 0.06);
+}
+
+.weather-night .current-card,
+.weather-night .details-panel,
+.weather-night .forecast-section,
+.weather-night .chat-section {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.weather-night .current-card,
+.weather-night .details-panel,
+.weather-night .forecast-section {
+  background: rgba(245, 248, 255, 0.96);
+}
+
+.weather-night .chat-section {
+  background: rgba(245, 248, 255, 0.97);
+}
+
+/* Accessibility: keep effects gentle for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .current-card,
+  .details-panel,
+  .forecast-section,
+  .chat-section,
+  .detail-card,
+  .forecast-card,
+  .search-form button,
+  .chat-form button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Gentle entrance animation for weather panels */
+@keyframes panel-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.weather-layout,
+.chat-section,
+.forecast-section {
+  animation: panel-appear 0.55s ease-out both;
+}
+
+.weather-layout {
+  animation-delay: 0.05s;
+}
+
+.chat-section {
+  animation-delay: 0.12s;
+}
+
+.forecast-section {
+  animation-delay: 0.19s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weather-layout,
+  .chat-section,
+  .forecast-section {
+    animation: none !important;
+  }
+}

@@ -233,13 +233,41 @@ await searchWeather(foundCity);
 
   const current = weather?.current;
   const daily = weather?.daily;
+  const weatherCode = current?.weather_code;
+const isDay = current?.is_day === 1;
+
+let weatherTheme = "weather-default";
+
+if (current) {
+  if (!isDay) {
+    weatherTheme = "weather-night";
+  } else if (weatherCode === 0) {
+    weatherTheme = "weather-sunny";
+  } else if (weatherCode <= 2) {
+    weatherTheme = "weather-partly-cloudy";
+  } else if (weatherCode === 3 || weatherCode === 45 || weatherCode === 48) {
+    weatherTheme = "weather-cloudy";
+  } else if (weatherCode >= 95) {
+    weatherTheme = "weather-storm";
+  } else if (
+    (weatherCode >= 71 && weatherCode <= 77) ||
+    (weatherCode >= 85 && weatherCode <= 86)
+  ) {
+    weatherTheme = "weather-snow";
+  } else if (
+    (weatherCode >= 51 && weatherCode <= 67) ||
+    (weatherCode >= 80 && weatherCode <= 82)
+  ) {
+    weatherTheme = "weather-rain";
+  }
+}
 
   const currentInfo = current
     ? getWeatherInfo(current.weather_code, current.is_day)
     : null;
 
   return (
-    <main className="app-shell">
+<main className={`app-shell ${weatherTheme}`}>
       <header className="topbar">
         <a className="brand" href="#home" aria-label="Weather GPT home">
           <span className="brand-icon">☀</span>
