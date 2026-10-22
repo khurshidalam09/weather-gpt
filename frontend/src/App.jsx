@@ -2,8 +2,11 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API_URL = "http://localhost:5000/api/weather";
-const AI_URL = "http://localhost:5000/api/ai/chat";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  (import.meta.env.DEV ? "http://localhost:5000" : "");
+const API_URL = `${API_BASE_URL}/api/weather`;
+const AI_URL = `${API_BASE_URL}/api/ai/chat`;
 
 function getWeatherInfo(code, isDay = 1) {
   if (code === 0) return { label: "Clear sky", icon: isDay ? "☀️" : "🌙" };
@@ -118,7 +121,7 @@ let foundCity = null;
 for (const candidate of [...new Set(candidates)]) {
   try {
     const weatherResponse = await fetch(
-      `http://localhost:5000/api/weather?city=${encodeURIComponent(candidate)}`
+      `${API_URL}?city=${encodeURIComponent(candidate)}`
     );
 
     const weatherResult = await weatherResponse.json();
